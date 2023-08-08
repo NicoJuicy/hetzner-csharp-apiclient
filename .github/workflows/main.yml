@@ -1,0 +1,29 @@
+name: Generate API Client
+
+on:
+  push:
+    branches:
+      - main  # Adjust this branch name as needed
+
+jobs:
+  generate-client:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate Client Library w/ the OpenAPITools Generator
+        uses: openapi-generators/openapitools-generator-action@v1.5.0
+        with:
+          inputSpec: https://docs.hetzner.cloud/spec.json  # URL to your OpenAPI spec
+          generatorName: csharp-netcore
+          configOptions: packageVersion=1.0.0  # Adjust the version as needed
+
+      - name: Commit generated code
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update API client using OpenAPI Generator"
+          git push
